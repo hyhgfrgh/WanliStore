@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class goods_info {
+public class GoodInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -19,7 +19,7 @@ public class goods_info {
 
     public String img_url;
 
-    public goods_info() {
+    public GoodInfo() {
         stock = -1;
     }
 }

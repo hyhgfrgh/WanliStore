@@ -1,7 +1,7 @@
 package com.wanli.hellospringboot.controller;
 
+import com.wanli.hellospringboot.entity.GoodInfo;
 import com.wanli.hellospringboot.entity.User;
-import com.wanli.hellospringboot.entity.goods_info;
 import com.wanli.hellospringboot.repository.GoodsRepository;
 import com.wanli.hellospringboot.repository.UsersRepository;
 import com.wanli.hellospringboot.utils.Encrypt;
@@ -20,18 +20,14 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 
 public class Controller {
-
-    private final GoodsRepository goodsRepo;
-    private final UsersRepository userRepo;
     @Autowired
-    public Controller(GoodsRepository goodsRepo, UsersRepository userRepo) {
-        this.goodsRepo = goodsRepo;
-        this.userRepo = userRepo;
-    }
+    private GoodsRepository goodsRepo;
+    @Autowired
+    private UsersRepository userRepo;
 
     @GetMapping("/api/add")
     public void add(String name, BigDecimal price, Integer stock, String category, String img_url,String introduce){
-        goods_info u = new goods_info();
+        GoodInfo u = new GoodInfo();
         u.name = name;u.stock = stock;
         u.price = price;u.category = category;
         u.img_url = img_url;u.introduce = introduce;
@@ -51,15 +47,15 @@ public class Controller {
     }
 
     @GetMapping("/api/list")
-    public Result<List<goods_info>> list(){
+    public Result<List<GoodInfo>> list(){
         return Result.success(goodsRepo.findAll());
     }
 
     @GetMapping("/api/update")
     public void update(Long id,String name, BigDecimal price, Integer stock, String category, String img_url,String introduce){
-        Optional<goods_info> u = goodsRepo.findById(id);
+        Optional<GoodInfo> u = goodsRepo.findById(id);
         if(u.isPresent()){
-            goods_info good = u.get();
+            GoodInfo good = u.get();
             if(!(name == null || name.isEmpty())) good.name = name;
             if(!(introduce == null || introduce.isEmpty())) good.introduce = introduce;
             if(!(stock == null)) good.stock = stock;
@@ -71,9 +67,9 @@ public class Controller {
     }
 
     @GetMapping("/api/find")
-    public goods_info find(Long id){
-        Optional<goods_info> u = goodsRepo.findById(id);
-        return u.orElseGet(goods_info::new);
+    public GoodInfo find(Long id){
+        Optional<GoodInfo> u = goodsRepo.findById(id);
+        return u.orElseGet(GoodInfo::new);
     }
 
 
