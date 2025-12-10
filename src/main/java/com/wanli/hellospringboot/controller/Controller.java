@@ -88,10 +88,19 @@ public class Controller {
             return Result.fail("用户已存在！");
         User user = new User();
         user.nickname = nickname;
-        user.password = Encrypt.hash(password, "MD5");
+        user.password = password;
         user.username = username;
         userRepo.save(user);
         return Result.success("注册成功！");
     }
 
+    @GetMapping("/api/showusers")
+    public Result<List<User>> ShowUsers(String username, String password, String nickname) throws Exception {
+        return Result.success(userRepo.findAll());
+    }
+    @GetMapping("/api/delAllUser")
+    public Result<String> DelAllUser() throws Exception {
+        userRepo.deleteAll();
+        return Result.success("全部删除完毕");
+    }
 }
