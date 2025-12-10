@@ -85,7 +85,7 @@ public class Controller {
     @GetMapping("/api/register")
     public Result<String> register(String username, String password, String nickname) throws Exception {
         if(userRepo.findByUsername(username) != null)
-            return Result.fail("用户已存在！");
+            return Result.fail("用户名已存在！");
         User user = new User();
         user.nickname = nickname;
         user.password = password;
