@@ -1,4 +1,4 @@
-package com.wanli.hellospringboot.utils;
+package com.wanli.WanliStore.utils;
 
 public class Result<T> {
 

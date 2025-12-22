@@ -1,4 +1,4 @@
-package com.wanli.hellospringboot;
+package com.wanli.WanliStore;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

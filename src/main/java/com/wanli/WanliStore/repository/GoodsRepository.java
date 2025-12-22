@@ -1,6 +1,6 @@
-package com.wanli.hellospringboot.repository;
+package com.wanli.WanliStore.repository;
 
-import com.wanli.hellospringboot.entity.GoodInfo;
+import com.wanli.WanliStore.entity.GoodInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

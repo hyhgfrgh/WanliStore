@@ -1,6 +1,4 @@
-package com.wanli.hellospringboot.entity;
-
-
+package com.wanli.WanliStore.entity;
 
 import jakarta.persistence.*;
 

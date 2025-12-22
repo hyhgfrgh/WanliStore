@@ -1,4 +1,4 @@
-package com.wanli.hellospringboot.utils;
+package com.wanli.WanliStore.utils;
 
 import java.security.MessageDigest;
 import java.util.HexFormat;

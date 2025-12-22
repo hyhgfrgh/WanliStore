@@ -1,11 +1,11 @@
-package com.wanli.hellospringboot.controller;
+package com.wanli.WanliStore.controller;
 
-import com.wanli.hellospringboot.entity.GoodInfo;
-import com.wanli.hellospringboot.entity.User;
-import com.wanli.hellospringboot.repository.GoodsRepository;
-import com.wanli.hellospringboot.repository.UsersRepository;
-import com.wanli.hellospringboot.utils.Encrypt;
-import com.wanli.hellospringboot.utils.Result;
+import com.fasterxml.jackson.core.JsonPointer;
+import com.wanli.WanliStore.entity.GoodInfo;
+import com.wanli.WanliStore.entity.Users;
+import com.wanli.WanliStore.repository.GoodsRepository;
+import com.wanli.WanliStore.repository.UsersRepository;
+import com.wanli.WanliStore.utils.Result;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -72,21 +72,27 @@ public class Controller {
         return u.orElseGet(GoodInfo::new);
     }
 
-
     @GetMapping("/api/auth/login")
-    public Boolean login(){
+    public Result<String> login( String username,String password) {
+        if(username == null || username.isEmpty())
+            return Result.fail("用户名不能为空");
+        if(password == null || password.isEmpty())
+            return Result.fail("密码不能为空");
+        Users user = userRepo.findByUsername(username);
+        if(user == null)
+            return Result.fail("用户不存在");
 
+        // 校验密码,后续补充加密密码的校验
+        if(!password.equals(user.password))
+            return Result.fail("密码错误");
 
-
-
-
-        return true;
+        return Result.success("登录成功");
     }
     @GetMapping("/api/register")
     public Result<String> register(String username, String password, String nickname) throws Exception {
         if(userRepo.findByUsername(username) != null)
             return Result.fail("用户名已存在！");
-        User user = new User();
+        Users user = new Users();
         user.nickname = nickname;
         user.password = password;
         user.username = username;
@@ -94,8 +100,8 @@ public class Controller {
         return Result.success("注册成功！");
     }
 
-    @GetMapping("/api/showusers")
-    public Result<List<User>> ShowUsers(String username, String password, String nickname) throws Exception {
+    @GetMapping("/api/showUsers")
+    public Result<List<Users>> ShowUsers(String username, String password, String nickname) throws Exception {
         return Result.success(userRepo.findAll());
     }
     @GetMapping("/api/delAllUser")
