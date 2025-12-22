@@ -7,9 +7,11 @@ import com.wanli.WanliStore.repository.GoodsRepository;
 import com.wanli.WanliStore.repository.UsersRepository;
 import com.wanli.WanliStore.utils.Result;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -73,7 +75,7 @@ public class Controller {
     }
 
     @GetMapping("/api/auth/login")
-    public Result<String> login( String username,String password) {
+    public Result<Long> login( String username,String password) {
         if(username == null || username.isEmpty())
             return Result.fail("用户名不能为空");
         if(password == null || password.isEmpty())
@@ -86,7 +88,7 @@ public class Controller {
         if(!password.equals(user.password))
             return Result.fail("密码错误");
 
-        return Result.success("登录成功");
+        return Result.success(user.id);
     }
     @GetMapping("/api/register")
     public Result<String> register(String username, String password, String nickname) throws Exception {
@@ -109,4 +111,9 @@ public class Controller {
         userRepo.deleteAll();
         return Result.success("全部删除完毕");
     }
+    @GetMapping("/api/findUser")
+    public Result<Users> findUser(@RequestParam Long id){
+        return Result.success(userRepo.findById(id).orElseGet(Users::new));
+    }
+
 }
