@@ -1,6 +1,7 @@
 package com.wanli.hellospringboot.entity;
 
 
+
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
