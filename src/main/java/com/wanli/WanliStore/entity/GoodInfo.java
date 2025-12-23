@@ -15,7 +15,7 @@ public class GoodInfo {
     public BigDecimal price;
     public Integer stock;
     public String category;
-
+    public Long belongTo;
     public String img_url;
 
     public GoodInfo() {

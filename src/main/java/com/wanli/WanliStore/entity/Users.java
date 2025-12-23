@@ -12,6 +12,10 @@ public class Users {
     public String username;
     public String password;
     public String nickname;
+    public String avatar_url;
+    public String email;
+    public String start_time;
+
     public Users() {}
 }
 

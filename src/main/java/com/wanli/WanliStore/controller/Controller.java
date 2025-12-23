@@ -47,7 +47,6 @@ public class Controller {
     public void delAll(){
         goodsRepo.deleteAll();
     }
-
     @GetMapping("/api/list")
     public Result<List<GoodInfo>> list(){
         return Result.success(goodsRepo.findAll());
@@ -68,6 +67,7 @@ public class Controller {
         }
     }
 
+
     @GetMapping("/api/find")
     public GoodInfo find(Long id){
         Optional<GoodInfo> u = goodsRepo.findById(id);
@@ -75,7 +75,7 @@ public class Controller {
     }
 
     @GetMapping("/api/auth/login")
-    public Result<Long> login( String username,String password) {
+    public Result<Users> login( String username,String password) {
         if(username == null || username.isEmpty())
             return Result.fail("用户名不能为空");
         if(password == null || password.isEmpty())
@@ -88,16 +88,17 @@ public class Controller {
         if(!password.equals(user.password))
             return Result.fail("密码错误");
 
-        return Result.success(user.id);
+        return Result.success(user);
     }
     @GetMapping("/api/register")
-    public Result<String> register(String username, String password, String nickname) throws Exception {
+    public Result<String> register(String username, String password, String nickname,String start_time) throws Exception {
         if(userRepo.findByUsername(username) != null)
             return Result.fail("用户名已存在！");
         Users user = new Users();
         user.nickname = nickname;
         user.password = password;
         user.username = username;
+        user.start_time = start_time;
         userRepo.save(user);
         return Result.success("注册成功！");
     }
