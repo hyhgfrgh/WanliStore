@@ -28,8 +28,9 @@ public class Controller {
     private UsersRepository userRepo;
 
     @GetMapping("/api/add")
-    public void add(String name, BigDecimal price, Integer stock, String category, String img_url,String introduce){
+    public void add(Long id,String name, BigDecimal price, Integer stock, String category, String img_url,String introduce){
         GoodInfo u = new GoodInfo();
+        u.belongTo = id;
         u.name = name;u.stock = stock;
         u.price = price;u.category = category;
         u.img_url = img_url;u.introduce = introduce;
@@ -102,6 +103,11 @@ public class Controller {
         userRepo.save(user);
         return Result.success("注册成功！");
     }
+    @GetMapping("/api/remove")
+    public Result<String> remove(Long id) {
+        userRepo.deleteById(id);
+        return Result.success("注销成功！");
+    }
 
     @GetMapping("/api/showUsers")
     public Result<List<Users>> ShowUsers(String username, String password, String nickname) throws Exception {
@@ -112,9 +118,30 @@ public class Controller {
         userRepo.deleteAll();
         return Result.success("全部删除完毕");
     }
-    @GetMapping("/api/findUser")
-    public Result<Users> findUser(@RequestParam Long id){
-        return Result.success(userRepo.findById(id).orElseGet(Users::new));
+    @GetMapping("/api/editUser")
+    public Result<String> editUser(Long id,String avatar_url,String email,String nickname){
+        Optional<Users> u = userRepo.findById(id);
+        if(u.isPresent()){
+            Users user = u.get();
+            if(!(nickname == null || nickname.isEmpty())) user.nickname = nickname;
+            user.avatar_url = avatar_url;
+            if(!(email == null || email.isEmpty())) user.email = email;
+            userRepo.save(user);
+        }
+        return Result.success("修改成功");
     }
+    @GetMapping("/api/findUserGoods")
+    public Result<List<GoodInfo>> findUserGoods(Long id){
+
+        List<GoodInfo> goods = goodsRepo.findByBelongTo(id);
+
+
+        return Result.success(goods);
+    }
+
+
+
+
+
 
 }

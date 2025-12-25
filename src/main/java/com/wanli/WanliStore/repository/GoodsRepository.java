@@ -11,4 +11,6 @@ public interface GoodsRepository extends JpaRepository<GoodInfo,Long> {
     void deleteByName(String name);
 
     List<GoodInfo> findByName(String name);
+
+    List<GoodInfo> findByBelongTo(Long id);
 }
