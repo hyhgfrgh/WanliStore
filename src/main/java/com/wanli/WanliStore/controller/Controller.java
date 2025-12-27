@@ -39,9 +39,9 @@ public class Controller {
 
     @GetMapping("/api/del")
     @Transactional
-
-    public void del(Long id){
+    public Result<String> del(Long id){
         goodsRepo.deleteById(id);
+        return Result.success("删除成功");
     }
 
     @GetMapping("/api/delAll")
@@ -134,7 +134,6 @@ public class Controller {
     public Result<List<GoodInfo>> findUserGoods(Long id){
 
         List<GoodInfo> goods = goodsRepo.findByBelongTo(id);
-
 
         return Result.success(goods);
     }
