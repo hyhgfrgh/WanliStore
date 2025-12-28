@@ -45,8 +45,9 @@ public class Controller {
     }
 
     @GetMapping("/api/delAll")
-    public void delAll(){
+    public Result<String> delAll(){
         goodsRepo.deleteAll();
+        return Result.success("所有商品以全部删除");
     }
     @GetMapping("/api/list")
     public Result<List<GoodInfo>> list(){
@@ -100,6 +101,7 @@ public class Controller {
         user.password = password;
         user.username = username;
         user.start_time = start_time;
+        user.golds = BigDecimal.valueOf(0);
         userRepo.save(user);
         return Result.success("注册成功！");
     }
@@ -138,8 +140,86 @@ public class Controller {
         return Result.success(goods);
     }
 
+    @GetMapping("/api/topup")
+    public Result<BigDecimal> topUp(Long user_id,String passwd){
+        Optional<Users> user = userRepo.findById(user_id);
+        if(user.isEmpty()) return Result.fail("用户不存在!");
+        Users u = user.get();
+        if(u.golds == null){
+            u.golds = BigDecimal.ZERO;
+        }
+        switch (passwd) {
+            case "wanli666" -> u.golds = u.golds.add(BigDecimal.valueOf(666666));
+            case "wanli777" -> u.golds = u.golds.add(BigDecimal.valueOf(7777777));
+            case "wanli888" -> u.golds = u.golds.add(BigDecimal.valueOf(88888888));
+            default -> {
+                return Result.fail("无效卡密");
+            }
+        }
+        userRepo.save(u);
+        return Result.success(u.golds);
+    }
 
 
+
+    @GetMapping("/api/transact")
+    @Transactional
+    public Result<String> findUserGoods(Long id_seller,Long id_buyer,Long id_good,Integer nums_buy){
+        if(nums_buy == null || nums_buy <= 0){
+            return Result.fail("购买数量不合法");
+        }
+        Optional<GoodInfo> good = goodsRepo.findById(id_good);
+        if(good.isEmpty()){
+            return Result.fail("商品不存在");
+        }
+        GoodInfo sellerGood = good.get();
+        if(!sellerGood.belongTo.equals(id_seller)){
+            return Result.fail("该商品不属于卖家，禁止交易");
+        }
+        if(sellerGood.stock == null || sellerGood.stock < nums_buy){
+            return Result.fail("您所购买的商品存货不足以您的要求");
+        }
+
+        Optional<Users> sellerOpt = userRepo.findById(id_seller);
+        Optional<Users> buyerOpt  = userRepo.findById(id_buyer);
+
+        if(sellerOpt.isEmpty() || buyerOpt.isEmpty()){
+            return Result.fail("交易双方账户异常");
+        }
+
+        Users seller = sellerOpt.get();
+        Users buyer  = buyerOpt.get();
+
+        if(buyer.golds == null) buyer.golds = BigDecimal.ZERO;
+        if(seller.golds == null) seller.golds = BigDecimal.ZERO;
+
+        BigDecimal totalPrice = sellerGood.price.multiply(new BigDecimal(nums_buy));
+
+        if(buyer.golds.compareTo(totalPrice) < 0){
+            return Result.fail("余额不足，请充值");
+        }
+
+        buyer.golds = buyer.golds.subtract(totalPrice);
+        seller.golds = seller.golds.add(totalPrice);
+
+        userRepo.save(buyer);
+        userRepo.save(seller);
+
+        sellerGood.stock -= nums_buy;
+        goodsRepo.save(sellerGood);
+
+        GoodInfo buyerGood = new GoodInfo();
+        buyerGood.name = sellerGood.name;
+        buyerGood.introduce = sellerGood.introduce;
+        buyerGood.price = sellerGood.price;
+        buyerGood.category = sellerGood.category;
+        buyerGood.img_url = sellerGood.img_url;
+        buyerGood.stock = nums_buy;
+        buyerGood.belongTo = id_buyer;
+        goodsRepo.save(buyerGood);
+
+        return Result.success("购买成功");
+    }
 
 
 

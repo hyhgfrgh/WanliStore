@@ -3,6 +3,8 @@ package com.wanli.WanliStore.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Users {
     // 不要用user命名，不然创建不出来表
@@ -15,7 +17,7 @@ public class Users {
     public String avatar_url;
     public String email;
     public String start_time;
-
+    public BigDecimal golds;
     public Users() {}
 }
 
